@@ -44,12 +44,6 @@ public final class NodeFlags {
      */
     public static final String ALLOW_FS_WRITE = "--allow-fs-write";
     /**
-     * The constant EXPERIMENTAL_SQLITE.
-     *
-     * @since 4.0.0
-     */
-    public static final String EXPERIMENTAL_SQLITE = "--experimental-sqlite";
-    /**
      * The constant HARMONY_TEMPORAL.
      *
      * @since 5.0.3
@@ -68,11 +62,11 @@ public final class NodeFlags {
      */
     public static final String JS_FLOAT_16_ARRAY = "--js-float16array";
     /**
-     * The constant NO_EXPERIMENTAL_REQUIRE_MODULE.
+     * The constant NO_REQUIRE_MODULE.
      *
      * @since 4.1.1
      */
-    public static final String NO_EXPERIMENTAL_REQUIRE_MODULE = "--no-experimental-require-module";
+    public static final String NO_REQUIRE_MODULE = "--no-require-module";
     /**
      * The constant NO_WARNINGS.
      *
@@ -90,11 +84,10 @@ public final class NodeFlags {
     private String[] allowFsRead;
     private String[] allowFsWrite;
     private String[] customFlags;
-    private boolean experimentalSqlite;
     private boolean harmonyTemporal;
     private String icuDataDir;
     private boolean jsFloat16Array;
-    private boolean noExperimentalRequireModule;
+    private boolean noRequireModule;
     private boolean noWarnings;
     private boolean permission;
     private boolean sealed;
@@ -108,9 +101,8 @@ public final class NodeFlags {
         allowFsRead = null;
         allowFsWrite = null;
         customFlags = null;
-        experimentalSqlite = false;
         jsFloat16Array = false;
-        noExperimentalRequireModule = false;
+        noRequireModule = false;
         noWarnings = false;
         permission = false;
         sealed = false;
@@ -169,16 +161,6 @@ public final class NodeFlags {
     }
 
     /**
-     * Is the experimental node:sqlite module enabled.
-     *
-     * @return true : yes, false: no
-     * @since 4.0.0
-     */
-    public boolean isExperimentalSqlite() {
-        return experimentalSqlite;
-    }
-
-    /**
      * Is temporal supported.
      *
      * @return true : yes, false: no
@@ -204,8 +186,8 @@ public final class NodeFlags {
      * @return true : yes, false: no
      * @since 4.1.1
      */
-    public boolean isNoExperimentalRequireModule() {
-        return noExperimentalRequireModule;
+    public boolean isNoRequireModule() {
+        return noRequireModule;
     }
 
     /**
@@ -319,20 +301,6 @@ public final class NodeFlags {
     }
 
     /**
-     * Sets experimental sqlite.
-     *
-     * @param experimentalSqlite the experimental sqlite
-     * @return the self
-     * @since 4.0.0
-     */
-    public NodeFlags setExperimentalSqlite(boolean experimentalSqlite) {
-        if (!sealed) {
-            this.experimentalSqlite = experimentalSqlite;
-        }
-        return this;
-    }
-
-    /**
      * Sets if temporal is supported.
      *
      * @param harmonyTemporal the temporal supported
@@ -373,15 +341,15 @@ public final class NodeFlags {
     }
 
     /**
-     * Sets no experimental require module.
+     * Sets no require module.
      *
-     * @param noExperimentalRequireModule the no experimental require module
+     * @param noRequireModule the no require module
      * @return the self
      * @since 4.1.1
      */
-    public NodeFlags setNoExperimentalRequireModule(boolean noExperimentalRequireModule) {
+    public NodeFlags setNoRequireModule(boolean noRequireModule) {
         if (!sealed) {
-            this.noExperimentalRequireModule = noExperimentalRequireModule;
+            this.noRequireModule = noRequireModule;
         }
         return this;
     }
@@ -433,9 +401,6 @@ public final class NodeFlags {
                     .map(path -> ALLOW_FS_WRITE + EQUAL + path.trim())
                     .forEach(tokens::add);
         }
-        if (experimentalSqlite) {
-            tokens.add(EXPERIMENTAL_SQLITE);
-        }
         if (harmonyTemporal) {
             tokens.add(HARMONY_TEMPORAL);
         }
@@ -445,8 +410,8 @@ public final class NodeFlags {
         if (jsFloat16Array) {
             tokens.add(JS_FLOAT_16_ARRAY);
         }
-        if (noExperimentalRequireModule) {
-            tokens.add(NO_EXPERIMENTAL_REQUIRE_MODULE);
+        if (noRequireModule) {
+            tokens.add(NO_REQUIRE_MODULE);
         }
         if (noWarnings) {
             tokens.add(NO_WARNINGS);

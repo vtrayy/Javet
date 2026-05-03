@@ -7,10 +7,10 @@ on:
   workflow_dispatch:
 
 env:
-  JAVET_NODE_VERSION: 24.14.1
-  JAVET_V8_VERSION: 14.7.173.18
-  JAVET_VERSION: 5.0.6
-  TEMPORAL_VERSION: 0.1.2
+  JAVET_NODE_VERSION: 24.15.0
+  JAVET_V8_VERSION: 14.8.178.16
+  JAVET_VERSION: 5.0.7
+  TEMPORAL_VERSION: 0.2.3
   ROOT: /Users/runner/work/Javet
 
 jobs:
@@ -72,6 +72,7 @@ jobs:
         cd ..
         gclient sync -D
         cd v8
+        sed -i '' 's/max\.value_or({})/max.value_or(uint8_t{})/' src/compiler/turboshaft/wasm-shuffle-reducer.cc
         mkdir -p out.gn.macos.${{ matrix.name }}/arm64.release
         cp ../../Javet/scripts/v8/gn/macos-arm64-${{ matrix.name }}-args.gn out.gn.macos.${{ matrix.name }}/arm64.release/args.gn
         gn gen out.gn.macos.${{ matrix.name }}/arm64.release
@@ -107,7 +108,7 @@ jobs:
     - name: Build Javet JNI
       env:
         CC: ${{ env.ROOT }}/google/v8/third_party/llvm-build/Release+Asserts/bin/clang
-        CXX: ${{ env.ROOT }}/google/v8/third_party/llvm-build/Release+Asserts/bin/clang
+        CXX: ${{ env.ROOT }}/google/v8/third_party/llvm-build/Release+Asserts/bin/clang++
       run: |
         cd ${{ env.ROOT }}/Javet/cpp
         deno run build --os macos --arch arm64 --v8-dir ${{ env.ROOT }}/google/v8 --cpu-count 2 ${{ matrix.i18n_flag }}
