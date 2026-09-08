@@ -186,7 +186,7 @@ namespace Javet {
             this->name = name;
             auto v8Context = v8Runtime->GetV8LocalContext();
             v8Inspector.reset(v8_inspector::V8Inspector::create(v8Runtime->v8Isolate, this).release());
-            v8Context->SetAlignedPointerInEmbedderData(EMBEDDER_DATA_INDEX, this);
+            v8Context->SetAlignedPointerInEmbedderData(EMBEDDER_DATA_INDEX, this, v8::kEmbedderDataTypeTagDefault);
             auto humanReadableName = ConvertFromUtf16StringToStringView(name);
             v8_inspector::V8ContextInfo contextInfo(v8Context, CONTEXT_GROUP_ID, humanReadableName);
             contextInfo.origin = humanReadableName;
@@ -239,7 +239,7 @@ namespace Javet {
         }
 
         void JavetInspectorClient::contextCreated(const V8LocalContext& v8Context) noexcept {
-            v8Context->SetAlignedPointerInEmbedderData(EMBEDDER_DATA_INDEX, this);
+            v8Context->SetAlignedPointerInEmbedderData(EMBEDDER_DATA_INDEX, this, v8::kEmbedderDataTypeTagDefault);
             auto humanReadableName = ConvertFromUtf16StringToStringView(name);
             v8_inspector::V8ContextInfo contextInfo(v8Context, CONTEXT_GROUP_ID, humanReadableName);
             contextInfo.origin = humanReadableName;
@@ -522,21 +522,12 @@ namespace Javet {
             auto pauseState = waitForDebugger
                 ? v8_inspector::V8Inspector::kWaitingForDebugger
                 : v8_inspector::V8Inspector::kNotWaitingForDebugger;
-#ifdef ENABLE_NODE
-            v8InspectorSession.reset(v8Inspector->connect(
-                CONTEXT_GROUP_ID,
-                channel.get(),
-                v8_inspector::StringView(),
-                v8_inspector::V8Inspector::kFullyTrusted,
-                pauseState).release());
-#else
             v8InspectorSession = v8Inspector->connectShared(
                 CONTEXT_GROUP_ID,
                 channel.get(),
                 v8_inspector::StringView(),
                 v8_inspector::V8Inspector::kFullyTrusted,
                 pauseState);
-#endif
         }
 
         int JavetInspectorSession::getSessionId() const noexcept {
